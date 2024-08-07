@@ -1,0 +1,10 @@
+﻿Latency = gecikme
+Horizontal = yatay
+Volume  = hacim
+Increas = arttırmark
+The data volume  = veri hacmi
+throughput = verim
+High throughput = yüksek verim
+Low latency = düşük geçikme süresi
+
+

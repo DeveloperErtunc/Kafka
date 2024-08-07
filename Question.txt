@@ -1,0 +1,7 @@
+Sharing nedir
+Yatay ölçeklenme ve dikey ölçeklenmey bak.
+Zero copy nedir ?
+Streaming nedir?
+Broker nedir
+Kafka Zookeper nedir?
+pop-sub => biliyorsun ama yinede bir bak.
