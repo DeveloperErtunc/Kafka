@@ -1,15 +1,22 @@
-﻿KafkaPublisherService kafkaService = new KafkaPublisherService();
- 
-await kafkaService.CreateTopic(new List<string> { KafkaConstants.UseCaseOne });
-
+﻿var service = new KafkaPublisherService();
+await service.CreateTopic(new List<string> { KafkaConstants.UseCaseOne,KafkaConstants.UseCaseTwo, KafkaConstants.UseCaseThree });
 for (; ; )
 {
-    for (int i = 0; i <15; i++)
+    Console.WriteLine($"press 1 for case that  key is null and string message  kafka partion balance its self ");
+    Console.WriteLine($"press 2 for case that  key is int and string message kafka partion balance its self ");
+    Console.WriteLine($"press 2 for case that  key is int and OrderCreatedEvent message kafka partion balance its self ");
+
+    var cases = Console.ReadLine();
+    if (int.TryParse(cases, out var count))
     {
-        await kafkaService.SendSimpleMessageWithNullKey($"Hello Word {i}", KafkaConstants.UseCaseOne);
+        var tasks = new List<Task>();
+        if (count == 1)
+            await service.SendSimpleMessageWithNullKey(KafkaConstants.UseCaseOne, KafkaConstants.UseCaseOne, 20);
+        
+        else if (count == 2)
+            await service.SendSimpleMessageWithKey(KafkaConstants.UseCaseTwo, KafkaConstants.UseCaseTwo, 20);
+        else if(count == 3)
+            await service.SendSComplexMessageWithKey(KafkaConstants.UseCaseThree, 20);
+
     }
-    Console.WriteLine("Press enter send message again to kafka");
-    Console.ReadLine();
 }
-
-

@@ -1,54 +1,52 @@
 ﻿namespace Apacha.Kafka.Console.Base.Service;
 
-public class KafkaPublisherService
+public class KafkaPublisherService : BaseKafkaService
 {
-    public ProducerConfig? Config { get; set; }
-    public IProducer<Null, string> Producer { get; set; }
-    public IAdminClient AdminClient { get; set; }
-    public KafkaPublisherService()
+    static ProducerConfig Config = new ProducerConfig()
     {
-        AdminClient=  new AdminClientBuilder(new AdminClientConfig()
+        BootstrapServers = KafkaConstants.BootstrapServers
+    };
+    static Random Rand = new Random();
+    public async Task SendSimpleMessageWithKey(string message, string topic, int count)
+    {
+        var producer = new ProducerBuilder<int, string>(Config).Build();
+        for (int i = 0; i < count; i++)
         {
-            BootstrapServers = KafkaConstants.BootstrapServers
-        }).Build();
+            var key = Rand.Next(0, 3);
 
-        Config = new ProducerConfig()
-        {
-            BootstrapServers = KafkaConstants.BootstrapServers,
-        };
-        Producer = new ProducerBuilder<Null, string>(Config).Build();
+            var body = new Message<int, string>() { Value = $"{message} {i}", Key = key };
+            var result = await producer.ProduceAsync(topic, body);
+            System.Console.WriteLine($"Created {i} topic:{topic}");
+        }
     }
-    public  async Task CreateTopic(List<string> topicsToCreate)
-    {
 
-        try
+    public async Task SendSComplexMessageWithKey(string topic, int count)
+    {
+        var producer = new ProducerBuilder<int, OrderCreatedEvent>(Config)
+            .SetValueSerializer(new CustomeValueSerilizer<OrderCreatedEvent>())
+            .Build();
+        for (int i = 0; i < count; i++)
         {
-            var metadata = AdminClient.GetMetadata(TimeSpan.FromSeconds(3));
-            var topics = metadata.Topics.Select(x => x.Topic).ToList();
-            topicsToCreate = topicsToCreate.Where(x => !topics.Contains(x)).ToList();
-            var isValidToCrete = topicsToCreate.Select(x => new TopicSpecification()
+            var orderEvent = new OrderCreatedEvent(i.ToString(), i * 100, Rand.Next(0, int.MaxValue));
+            var body = new Message<int, OrderCreatedEvent>()
             {
-                Name = x,
-                NumPartitions = 3,
-                ReplicationFactor = 1
-
-            }).ToList();
-            await AdminClient.CreateTopicsAsync(isValidToCrete);
-            System.Console.WriteLine($"Created {string.Join(",", isValidToCrete.Select(x => x.Name).ToList())}");
-
+                Value = orderEvent,
+                Key = Rand.Next(0, 3)
+            };
+            var result = await producer.ProduceAsync(topic, body);
+            System.Console.WriteLine($"{JsonSerializer.Serialize(orderEvent)} Count {i} topic:{topic}");
         }
-        catch (Exception ex)
-        {
-            System.Console.WriteLine(ex.Message);
-        }
+
     }
-    public  async Task SendSimpleMessageWithNullKey(string message, string topic)
+
+    public async Task SendSimpleMessageWithNullKey(string message, string topic, int count)
     {
-        var body = new Message<Null, string>() { Value = message };
-        var result = await Producer.ProduceAsync(topic, body);
-        foreach (var item in result.GetType().GetProperties())
+        var producer = new ProducerBuilder<Null, string>(Config).Build();
+        for (int i = 0; i < count; i++)
         {
-            System.Console.WriteLine($"Name:{item.Name} Value : {item. GetValue(result)}");
+            var body = new Message<Null, string>() { Value = $"{message} {i}" };
+            var result = await producer.ProduceAsync(topic, body);
+            System.Console.WriteLine($"Created {i} topic:{topic}");
         }
     }
 }

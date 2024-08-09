@@ -25,17 +25,17 @@ services:
     environment:
       DYNAMIC_CONFIG_ENABLED: 'true'
 
-  apacha.kafka.console.consumer:
-    image: ${DOCKER_REGISTRY-}apachakafkaconsoleconsumer
-    build:
-      context: .
-      dockerfile: Apacha.Kafka.Console.Consumer/Dockerfile
+  # apacha.kafka.console.consumer:
+  #   image: ${DOCKER_REGISTRY-}apachakafkaconsoleconsumer
+  #   build:
+  #     context: .
+  #     dockerfile: Apacha.Kafka.Console.Consumer/Dockerfile
 
-  apacha.kafka.console.producer:
-    image: ${DOCKER_REGISTRY-}apachakafkaconsoleproducer
-    build:
-      context: .
-      dockerfile: Apacha.Kafka.Console.Producer/Dockerfile
+  # apacha.kafka.console.producer:
+  #   image: ${DOCKER_REGISTRY-}apachakafkaconsoleproducer
+  #   build:
+  #     context: .
+  #     dockerfile: Apacha.Kafka.Console.Producer/Dockerfile
 
 volumes:
   kafka_data:
