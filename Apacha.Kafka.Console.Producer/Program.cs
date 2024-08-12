@@ -1,4 +1,4 @@
-﻿var service = new KafkaPublisherService();
+﻿var service = new KafkaProducerService();
 await service.CreateTopic(new List<string> { KafkaConstants.UseCaseOne,KafkaConstants.UseCaseTwo, KafkaConstants.UseCaseThree });
 for (; ; )
 {

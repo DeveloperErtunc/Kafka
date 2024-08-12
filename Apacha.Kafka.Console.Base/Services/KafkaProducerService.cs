@@ -1,6 +1,6 @@
 ﻿namespace Apacha.Kafka.Console.Base.Service;
 
-public class KafkaPublisherService : BaseKafkaService
+public class KafkaProducerService : BaseKafkaService
 {
     static ProducerConfig Config = new ProducerConfig()
     {
