@@ -16,3 +16,4 @@ public record OrderCreatedEvent
     public int UserId { get; set; }
 
 }
+public record MessageKey(string key,string key2);
